@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vega-Lite Bar Chart</title>
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
+
+    <style media="screen">
+      /* Add space between Vega-Embed links  */
+      .vega-actions a {
+        margin-right: 5px;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div class = "header-image">
+        <img src = "VisFinalPic2.jpg">
+        <div class = "top-left">
+            <h1 class = "header-1">CLIMATE CHANGE: IS IT REALLY OUR PROBLEM?</h1>
+        </div>
+    </div>
+    <!-- Container for the visualization -->
+    <!--
+    <div class = 'select'>
+
+    <select name="selection" id="selection">
+        <option value="Carbon">Carbon Dioxide Emissions</option>
+        <option value="Emission_Type">Carbon Emissions by Type</option>
+        <option value="Temp">Avg. Temperature</option>
+        <option value="Cost">Cost of Sea Level Rise</option>
+        <option value="State_Temp">State Temperature</option>
+        <option value="State">State Exploration</option>
+        
+      </select>
+
+    </div>
+    -->
+
+    <!-- Still implementing logic on using this to update below -->
+    <div class = 'select_2'>
+
+        <form name = 'form'>
+        <ul class="select_3">
+            <hr>
+            <li>
+                <button class = "butt"  value="Carbon" name = 'amount'> US CO2 Emissions</button>
+            </li>
+            <li>
+              <button class = "butt" value="Emission_Type" name = 'amount'>CO2 Emissions by Industry</button>
+              
+            </li>
+            <li>
+              <button class = "butt" value="Temp" name = 'amount'>Average US Temperature</button>
+            </li>
+            <li>
+                <button class = "butt" value="State_Temp" name = 'amount'>Temperature Change by State</button>
+                
+              </li>
+            <li>
+              <button class = "butt" value="Cost" name = 'amount'>Projected Cost of Sea Level Rise</button>
+              
+            </li>
+            
+            <li>
+              <button class = "butt" value="State" name = 'amount'>State Exploration</button>
+              
+            </li>
+        </ul>
+
+        </form>
+    </div>
+
+    <div class = 'row'>
+    <div class = 'column' id="vis_1"></div>
+    <div class = 'column'id="vis_2"></div>
+    </div>
+    <div class = 'row'>
+    <div class = 'column'id="vis_3"></div>
+    </div>
+
+    <script>
+
+    //Assign different graph renders with differing datasets
+    var Temperature = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.1.1.json",
+
+        "description": "Lab 9",
+        "title": "Average Annual Temperature (ºF)",
+        "data": {"url": "temperature.csv"},
+
+        "vconcat": [ {
+        "width": 700,
+        "height": 500,
+        "layer": [
+        {
+            "mark": { "type": "line", "tooltip": true},
+            "encoding": {
+                "x": {"field": "date", "type": "temporal"},
+                "y": {"field": "temp", "type": "quantitative", "scale": {"domain": [50,55]}}
+                
+            }
+        },
+        {
+            "mark": {
+                "type": "line",
+                "color": "firebrick"
+            },
+            "transform": [
+                {
+                "regression": "temp",
+                "on": "date"
+                }
+            ],
+            "encoding": {
+                "x": {
+                "field": "date",
+                "type": "temporal"
+                },
+                "y": {
+                "field": "temp",
+                "type": "quantitative"
+                }
+            }
+        }]
+        
+        }],
+    };
+
+    var US_Carbon = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.1.1.json",
+
+        "description": "Lab 9",
+        "title": "US Carbon Annual Emmisions (Billion Tons/Year)",
+        "data": {"url": "USCarbon.csv"},
+
+        "vconcat": [ {
+        "width": 700,
+        "height": 500,
+        "mark": { "type": "line", "tooltip": true},
+        "encoding": {
+            "x": {"field": "date", "type": "temporal"},
+            "y": {"field": "carbon", "type": "quantitative", "axis": {"format": "e"}}  
+        },
+        }],
+    };
+    var Global_Carbon = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.1.1.json",
+
+        "description": "Lab 9",
+        "title": "Global Annual Carbon Emmisions (Billion Tons/Year)",
+        "data": {"url": "co2_global.csv"},
+
+        "vconcat": [ {
+        "width": 700,
+        "height": 500,
+        "mark": { "type": "line", "tooltip": true},
+        "encoding": {
+            "x": {"field": "date", "type": "temporal"},
+            "y": {"field": "carbon", "type": "quantitative"}  
+        },
+        }],
+    };
+
+    var Per_Capita = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.1.1.json",
+
+        "description": "Lab 9",
+        "title": "US Per Capita Carbon Emmisions (Tons/Year)",
+        "data": {"url": "per_capita.csv"},
+
+        "vconcat": [ {
+        "width": 700,
+        "height": 500,
+        "mark": { "type": "line", "tooltip": true},
+        "encoding": {
+            "x": {"field": "date", "type": "temporal"},
+            "y": {"field": "carbon", "type": "quantitative"}  
+        },
+        }],
+    };
+
+    var Emission_Type = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.1.1.json",
+
+        "description": "Lab 9",
+        "title": "US Per Capita Carbon Emmisions (Tons/Year)",
+        "data": {"url": "emission_type.csv"},
+        "repeat": {
+            "layer": ['oil',"coal",'gas','cement','flaring','other']
+        },
+        "spec": {
+        "width": 700,
+        "height": 500,
+        "mark": { "type": "area", "tooltip": true},
+        "encoding": {
+            "x": {"field": "date", "type": "temporal","title": "Date"},
+            "y": {"aggregate": "sum", "field": {"repeat": "layer"}, "type": "quantitative", "title": "Sum of Carbon Emissions (Tons)" },
+            "color": {
+            "datum": {"repeat": "layer"},
+            "type": "nominal"
+      }
+        },
+        },
+    };
+
+
+    var State_Temp = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.1.1.json",
+
+        "description": "Lab 9",
+        "title": "Average State Temperatures in the U.S",
+        "data": {"url": "state_temp.csv"},
+        "transform": [
+            {"filter": {"timeUnit":"month", "field":"Date","equal":"July"}},
+         ],
+
+        "params": [{
+        "name": "State",
+        "select": {"type": "point", "fields": ["Location"]},
+
+        "bind": {"input": "select", "options": [null, "Alabama", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "U.S. Virgin Islands", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]}
+        },
+
+        { "name": "yearBorn", "value": 1895,
+        "bind": {"input": "range", "min": 1895, "max": 2021, "step": 1} },
+        
+        ],
+
+        "vconcat": [ {
+        "width": 700,
+        "height": 500,
+
+        "mark": { "type": "line", "tooltip": true},
+        "encoding": {
+            "x": {"field": "Date", "type": "temporal",
+                "condition":{
+                    "param":"yearBorn",
+                    
+                    
+                }},
+            "y": {"field": "Value", "type": "quantitative"},
+            "color": {
+                "condition":{
+                    "param":"State",
+                    "field": "Location",
+                    "scale": {"scheme": "category20b"}
+                    },
+                "value":"grey"
+                },
+
+            "opacity":{
+                "condition":{
+                    "param":"State",
+                    "field": "Location",
+                    "value":"1"
+                    },
+                "value":"0.025"
+                },
+
+            },
+        }],
+    };
+
+
+    var Cost = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "title": "Estimated Cost of Sea Level Rise by 2100 (Billions of USD)",
+        "description": "Estimated Cost of Sea Level Rise by 2100 (Billions of USD)",
+        "width": 700,
+        "height": 500,
+        "data": {"url": "sealevel_cost.csv"},
+        "mark": {"type": "bar", "tooltip": true},
+        "encoding": {
+            "x": {"field": "state", "type": "nominal", "sort": "y"},
+            "y": {"field": "cost", "type": "quantitative", "sort": "ascending"}
+        }
+    };
+    vegaEmbed('#vis_1', US_Carbon);
+    vegaEmbed('#vis_2', Per_Capita);
+    vegaEmbed('#vis_3', Global_Carbon);
+
+    var select = 'Carbon';
+
+    var rad = document.form.amount;
+    var prev = null;
+    for (var i = 0; i < rad.length; i++) {
+    rad[i].addEventListener('click', function() {
+
+        if (this !== prev) {
+            prev = this;
+        }
+        select = this.value
+        console.log (select)
+
+    //Assign select variable
+    //const select = document.querySelector('#selection');
+
+    //Initialize default graphs
+
+    //Conditional Render for Selections
+
+    //select.onchange = (event) => {
+        
+        event.preventDefault();
+        console.log (select)
+        
+        if (select == 'Carbon'){
+            vegaEmbed('#vis_1', US_Carbon);
+            vegaEmbed('#vis_2', Per_Capita);
+            vegaEmbed('#vis_3', Global_Carbon);
+        }
+        else if (select == 'Temp'){
+            vegaEmbed('#vis_1', Temperature);
+            //Clear bottom graphs
+            document.querySelector('#vis_2').innerHTML = 'The trend depicted clearly shows a slight yet highly impactful upward trend in average US tempeartures over the last century. The 2º average increase could mean near catastrophic consquencesfor global currents, coastal cities, wildfires and general environmental trends.';
+            document.querySelector('#vis_3').innerHTML = '';
+        }
+        else if (select == 'State_Temp'){
+            //vegaEmbed('#vis_1', State_Temp);
+            document.querySelector('#vis_1').innerHTML = "<div class='tableauPlaceholder' id='viz1637618209316' style='position: relative'><noscript><a href='#'><img alt='Sheet 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Fi&#47;Final_proj_map&#47;Sheet1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Final_proj_map&#47;Sheet1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Fi&#47;Final_proj_map&#47;Sheet1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>          ";
+            var divElement = document.getElementById('viz1637618209316');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);
+            //Clear bottom graphs
+            document.querySelector('#vis_2').innerHTML = 'Using the slider below the graph, you can observe the gradual rise of temperatures across every state. As you approach the 21st century you can observe each and every state getting more intense as cumulative temperatures continue to rise. While it may seem like a small change in each state, even a couple degrees in temperature increase can have near catastrophic results for climate disasters. ';
+            document.querySelector('#vis_3').innerHTML = '';
+        }
+        else if (select == 'Cost'){
+            vegaEmbed('#vis_1', Cost);
+            //Clear bottom graphs
+            document.querySelector('#vis_2').innerHTML = 'As global temperatures have risen over the past century, global sea ice levels have decreased rapidly and rising ocean temperatures are causing coastal sea levels to rise. As you can see in the graph adjacent, coastal areas in the United States are at serious risk of costly damage as a result of rising water. In tbe next 100 years, low lying areas are at risk of over 500 billion in property damages (residential alone) in just Florida and New Jersey.';
+            document.querySelector('#vis_3').innerHTML = '';
+        }
+        else if (select == 'Emission_Type'){
+            vegaEmbed('#vis_1', Emission_Type);
+            //Clear bottom graphs
+            document.querySelector('#vis_2').innerHTML = 'As you can see, Carbon Emissions across all sectors are trending upwards and even despite slight decreases in coal production, gas and oil are both trending upwards to compnsate. Even despite changes in the major causes of Carbon emissions, there is a concerning increase in overall carbon emissions.';
+            document.querySelector('#vis_3').innerHTML = '';
+        }
+        else if (select == 'State'){
+            vegaEmbed('#vis_1', State_Temp);
+            document.querySelector('#vis_2').innerHTML = '<label for ="states"> Choose a state</label> <select name = "States" id = "States><option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="DC">District Of Columbia</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option>';
+            document.querySelector('#vis_3').innerHTML = '';
+        }
+    //};
+    }) 
+    }
+
+    </script>
+  </body>
+</html>
